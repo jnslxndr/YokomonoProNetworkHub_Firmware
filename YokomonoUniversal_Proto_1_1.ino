@@ -25,24 +25,19 @@
 #define OUT_2          9
 
 
-unsigned int PORT = 8888;      // send port (client)
-
-//unsigned int localPort = 8888;      // send port (client)
-//unsigned int destPort  = 6000;      // receive port (serve)
+unsigned int SERVER_PORT = 8888;      // send port (client)
+unsigned int CLIENT_PORT = 6000;      // receive port (serve)
 
 /**
  * OSC related
  */
-byte destIp[]  = { 
-  255, 255, 255, 255};
-
-char *topAddress="/yokomonopro";
-char *subAddress[1]={"1","2","3","4","5","6","7","8"};
+byte BROADCAST_IP[] = {255,255,255,255};
+char *MAIN_ADDR     = "/yokomonopro";
+char *SUB_ADDR[8]   = {"1","2","3","4","5","6","7","8"};
 
 OSCMessage recMes;
 OSCMessage sendMes;
-
-OSCClass osc(&recMes);
+OSCClass   osc(&recMes);
 
 void setup() {
   // start the serial library:
@@ -51,13 +46,11 @@ void setup() {
   
   // start the Ethernet connection:
   safe_start_ethernet();
-  // DEBUG
-  printIpToSerial();
   
   setupGroupSwitch();
   
-  osc.begin(localPort);
-  osc.flush();
+  /** Setup Ports to listen to **/
+  setupOSC();
 
   pinMode(13,OUTPUT);
   pinMode(9,OUTPUT);
@@ -73,6 +66,7 @@ void loop() {
       // update the server
       // read the value of the dtmf
       ival = val = (val==1.0) ? 0.0:1.0;
+      prepare_send();
       sendMes.setArgs("f",&val);
       osc.sendOsc( &sendMes );
       delay(250);
@@ -81,7 +75,7 @@ void loop() {
       // update the client
       if(osc.available()) {
         logMessage(&recMes);
-        uint8_t match = strcmp(recMes.getAddress(recMes.getAddressNum()-1),subAddress[0]);
+        uint8_t match = strcmp(recMes.getAddress(recMes.getAddressNum()-1),SUB_ADDR[0]);
         Serial.print(match);
         if (match == 0 && recMes.getTypeTag(0) == 'f') {
           ival = recMes.getArgFloat(0);

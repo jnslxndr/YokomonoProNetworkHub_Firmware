@@ -6,11 +6,9 @@ void setupGroupSwitch(){
  PORTC |= B00001111; // Pull up A0 to A3 to have reliable values
 }
 
-
 /**
  * Read group number
  */
-
 int group_num() {
   return (int)(~PINC&B00001111)%8; // mask the first 4 ports
 }
@@ -19,11 +17,18 @@ int is_sender() {
   return group_num()>5;
 }
 
+
+void setupOSC(){
+  unsigned int _port = (is_sender())?SERVER_PORT:CLIENT_PORT;
+  osc.begin(_port);
+  osc.flush();
+}
+
 void prepare_send(){
-    sendMes.setIp( BROADCAST );
-    sendMes.setPort( PORT );
-    sendMes.setTopAddress(topAddress);
-    sendMes.setSubAddress(subAddress[0]);
+    sendMes.setIp( BROADCAST_IP );
+    sendMes.setPort( CLIENT_PORT );
+    sendMes.setTopAddress(MAIN_ADDR);
+    sendMes.setSubAddress(SUB_ADDR[group_num()]);
 }
 
 
@@ -50,72 +55,8 @@ void safe_start_ethernet(){
     // delay(50); // is a delay needed?
   } 
   while (conn_status == 0);
+  
+  // DEBUG //
+  printIpToSerial();
 }
-
-void printIpToSerial() {
-  // print your local IP address:
-  Serial.print("My IP address: ");
-  for (byte thisByte = 0; thisByte < 4; thisByte++) {
-    // print the value of each byte of the IP address:
-    Serial.print(Ethernet.localIP()[thisByte], DEC);
-    Serial.print("."); 
-  }
-  Serial.println();
-}
-
-// *********  utility  ***********************************
-void logMessage(OSCMessage *mes){
-  uint8_t *ip=mes->getIp();
-
-  //disp ip & port
-  Serial.print("from IP:");
-  Serial.print(ip[0],DEC);
-  Serial.print(".");
-  Serial.print(ip[1],DEC);
-  Serial.print(".");
-  Serial.print(ip[2],DEC);
-  Serial.print(".");
-  Serial.print(ip[3],DEC);
-  Serial.print(" port:");
-  Serial.print(mes->getPort(),DEC);
-  Serial.print("   ");
-
-  //disp adr
-  for(int i = 0 ; i < mes->getAddressNum() ; i++){
-    Serial.print("/");
-    Serial.print(mes->getAddress(i));
-  }
-
-  //disp type tags
-  Serial.print("  ,");
-  for(int i = 0 ; i < mes->getArgNum() ; i++){
-    Serial.print(mes->getTypeTag(i));
-    Serial.print(" ");
-  }
-
-  //disp args
-  for(int i = 0 ; i < mes->getArgNum() ; i++){
-
-    switch( mes->getTypeTag(i) ){
-
-    case 'i': 
-      {
-        Serial.print( mes->getArgInt(i) );
-        Serial.print(" ");
-      }
-      break;
-
-    case 'f':  
-      {
-        Serial.print( mes->getArgFloat(i) );
-        Serial.print(" ");
-      }
-      break;
-
-    }
-  }
-  Serial.println(""); // last thing is a LF
-}
-
-
 
