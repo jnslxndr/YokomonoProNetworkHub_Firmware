@@ -1,7 +1,7 @@
 /**
  * Setup PORTC (AnalogIn)
  */
-void setupGroupPort(){
+void setupGroupSwitch(){
  DDRC  |= B00001111;
  PORTC |= B00001111; // Pull up A0 to A3 to have reliable values
 }
@@ -12,9 +12,19 @@ void setupGroupPort(){
  */
 
 int group_num() {
-  return (int)(~PINC&B00001111); // mask the first 4 ports
+  return (int)(~PINC&B00001111)%8; // mask the first 4 ports
 }
 
+int is_sender() {
+  return group_num()>5;
+}
+
+void prepare_send(){
+    sendMes.setIp( BROADCAST );
+    sendMes.setPort( PORT );
+    sendMes.setTopAddress(topAddress);
+    sendMes.setSubAddress(subAddress[0]);
+}
 
 
 /**
