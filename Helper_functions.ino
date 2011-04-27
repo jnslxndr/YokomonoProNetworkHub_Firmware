@@ -27,8 +27,8 @@ void setupOSC(){
 void prepare_send(){
     sendMes.setIp( BROADCAST_IP );
     sendMes.setPort( CLIENT_PORT );
-    sendMes.setTopAddress(MAIN_ADDR);
-    sendMes.setSubAddress(SUB_ADDR[group_num()]);
+    sendMes.setTopAddress( MAIN_ADDR );
+    sendMes.setSubAddress( SUB_ADDR[group_num()] );
 }
 
 

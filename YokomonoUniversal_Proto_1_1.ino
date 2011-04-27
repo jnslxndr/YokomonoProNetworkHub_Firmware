@@ -31,9 +31,9 @@ unsigned int CLIENT_PORT = 6000;      // receive port (serve)
 /**
  * OSC related
  */
-byte BROADCAST_IP[] = {255,255,255,255};
-char *MAIN_ADDR     = "/yokomonopro";
-char *SUB_ADDR[8]   = {"1","2","3","4","5","6","7","8"};
+byte BROADCAST_IP[] = {255,255,255,255}; // we broadcast to all networks
+char *MAIN_ADDR     = "/yokomonopro"; // main address
+char *SUB_ADDR[8]   = {"1","2","3","4","5","6","7","8"}; // groups
 
 OSCMessage recMes;
 OSCMessage sendMes;
@@ -61,7 +61,6 @@ void loop() {
   double val = 0.0;  //double only ( not float) 
   int ival = 0;
   while(1) {
-    
     if (is_sender()) {
       // update the server
       // read the value of the dtmf
@@ -74,6 +73,7 @@ void loop() {
     else {
       // update the client
       if(osc.available()) {
+        // check for PING message?
         logMessage(&recMes);
         uint8_t match = strcmp(recMes.getAddress(recMes.getAddressNum()-1),SUB_ADDR[0]);
         Serial.print(match);
