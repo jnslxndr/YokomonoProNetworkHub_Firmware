@@ -1,13 +1,15 @@
-// *********  utility  ***********************************
-void printIpToSerial() {
-  // print your local IP address:
-  Serial.print("My IP address: ");
-  for (byte thisByte = 0; thisByte < 4; thisByte++) {
-    // print the value of each byte of the IP address:
-    Serial.print(Ethernet.localIP()[thisByte], DEC);
-    Serial.print("."); 
-  }
-  Serial.println();
+
+void setupOSC(){
+  unsigned int _port = (is_sender())?SERVER_PORT:CLIENT_PORT;
+  osc.begin(_port);
+  osc.flush();
+}
+
+void prepare_send(){
+    sendMes.setIp( BROADCAST_IP );
+    sendMes.setPort( CLIENT_PORT );
+    sendMes.setTopAddress( MAIN_ADDR );
+    sendMes.setSubAddress( SUB_ADDR[group_num()] );
 }
 
 void logMessage(OSCMessage *mes){
