@@ -3,12 +3,12 @@
  * Try to find an MAC Address, that's is not alread taken
  */
 void safe_start_ethernet(){
+  connLedOff();
   randomSeed(analogRead(0));
   byte mac[6] = { 
     0x00, 0xAA, 0xBB, 0xCC, (byte)group_num(), 0x00   };
   int conn_status = 0;
   do {
-    connLedOff();
     mac[5] = (byte) random(255);
     conn_status = Ethernet.begin(mac);
     if (conn_status) {
