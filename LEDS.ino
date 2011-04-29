@@ -1,9 +1,6 @@
 /* ----------- LEDs ------------------- */
 
 // LEDS: B11100010 DDRD
-#define POWER_LED      5 // OUT
-#define CONNECTION_LED 6 // OUT
-#define SIGNAL_LED     7 // OUT
 
 void setupLeds(){
   
@@ -12,12 +9,17 @@ void setupLeds(){
   pinMode(SIGNAL_LED,OUTPUT );
   return;
   
-  DDRD   = B1111110;  // rigth most: 10 for Serial transmit
-  PORTD &= B00000011; // turns off 2..7, but leaves pins 0 and 1 alone
+  DDRD   = B11100010;  // rigth most: 10 for Serial transmit
+  PORTD &= B00011111; // turns off 2..7, but leaves pins 0 and 1 alone
+}
+
+
+void set_leds(char leds, char state) {
+  PORTD = (state) ? PIND|leds : PIND&~leds; // set state
 }
 
 void allLedOff(){
-  PORTD &= B00000011; // LEDS off
+  PORTD &= B00011111; // LEDS off
 }
 
 void powerLedOn(){
@@ -25,7 +27,7 @@ void powerLedOn(){
 }
 
 void powerLedOff(){
-  PORTD &= ~B00100000;
+  PORTD &= B11011111;
 }
 
 void connLedOn(){
@@ -33,7 +35,7 @@ void connLedOn(){
 }
 
 void connLedOff(){
-  PORTD &= ~B0100000;
+  PORTD &= B10111111;
 }
 
 void statusLedOn(){
@@ -41,7 +43,7 @@ void statusLedOn(){
 }
 
 void statusLedOff(){
-  PORTD &= ~B1000000;
+  PORTD &= B01111111;
 }
 
 
