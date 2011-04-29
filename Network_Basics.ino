@@ -2,38 +2,33 @@
 /**
  * Try to find an MAC Address, that's is not alread taken
  */
+
 void safe_start_ethernet(){
-  connLedOff();
-  randomSeed(analogRead(0));
-  byte mac[6] = { 
-    0x00, 0xAA, 0xBB, 0xCC, (byte)group_num(), 0x00   };
+  set_leds(CL,LOW);
   int conn_status = 0;
+  byte mac[6] = { 0x00, 0xAA, 0xBB, 0xCC, 0xDD, MAC_ADDR} ; // , (byte)(group_num()) };
   do {
-    mac[5] = (byte) random(255);
     conn_status = Ethernet.begin(mac);
     if (conn_status) {
-      connLedOn();
+      set_leds(CL,HIGH);
       Serial.println("SUCCESSFULLY configured Ethernet using DHCP"); 
     }
     else {
       blinkNoConnection();
-      //mac_addr=++mac_addr&0xFF; // loop though the bytes to find a right one
       Serial.println("FAILED to configure Ethernet using DHCP! Please restart ...");
     }
-  } 
-  while (conn_status == 0);
+  } while (conn_status == 0);
   
   // DEBUG //
   printIpToSerial();
 }
 
 void blinkNoConnection(){
-        for (int i=0;i<5;i++) {
-        digitalWrite(CONNECTION_LED,HIGH);
+  char state = 0x1;
+  for (int i=0;i<5;i++) {
+        set_leds(CL,state); state = !state;
         delay(50);
-        digitalWrite(CONNECTION_LED,LOW);
-        delay(50);
-      }
+  }
 }
 
 // *********  utility  ***********************************
