@@ -1,0 +1,47 @@
+#######################################
+# Syntax Coloring Map For OSCClass
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+OSCClass	KEYWORD1
+OSCMessage	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+
+getIp	KEYWORD2
+getPort	KEYWORD2
+getAddress	KEYWORD2
+getTopAddress	KEYWORD2
+getSubAddress	KEYWORD2
+getAddressNum	KEYWORD2
+getTypeTag	KEYWORD2
+getArgNum	KEYWORD2
+getArgInt	KEYWORD2
+getArgFloat	KEYWORD2
+setTopAddress	KEYWORD2
+setSubAddress	KEYWORD2
+setAddress	KEYWORD2
+setAddress	KEYWORD2
+setIp	KEYWORD2
+setIp	KEYWORD2
+setPort	KEYWORD2
+setArgs	KEYWORD2
+begin	KEYWORD2
+begin	KEYWORD2
+stop	KEYWORD2
+available	KEYWORD2
+setRecieveMessage	KEYWORD2
+getMessage	KEYWORD2
+flush	KEYWORD2
+sendOsc	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

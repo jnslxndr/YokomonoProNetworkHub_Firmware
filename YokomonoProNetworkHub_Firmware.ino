@@ -5,6 +5,9 @@
  * Creative Commons Attribution - Noncommercial - Share alike 2.0 Belgium applies!
  *
  * Do NOT use pins 10,11,12,13 (used by the ethernetshield for SPI)
+ *
+ * Libraries used: OSCClass (http://recotana.com, GPL 2.1)
+ *
  */
 
 #include <SPI.h>
