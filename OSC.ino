@@ -1,4 +1,7 @@
-
+/* ----- 
+   OSC Stuff
+   -----
+*/
 void setupOSC(){
   unsigned int _port = (is_sender())?SERVER_PORT:CLIENT_PORT;
   osc.begin(_port);

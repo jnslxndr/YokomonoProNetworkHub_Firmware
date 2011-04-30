@@ -2,12 +2,20 @@
  * YOKOMO PRO FIRMWARE Ethernet/WiFi VERSION 1.0
  * written @timelab, April 2011 by jens alexander ewald, http://ififelse.net
  *
- * Creative Commons Attribution - Noncommercial - Share alike 2.0 Belgium applies!
+ * Creative Commons Attribution - Noncommercial - Share alike 2.0 applies!
+ *
+ * See http://creativecommons.org/licenses/by-nc-sa/2.0/legalcode
  *
  * Do NOT use pins 10,11,12,13 (used by the ethernetshield for SPI)
- *
+ * 
  * Libraries used: OSCClass (http://recotana.com, GPL 2.1)
- *
+ * 
+ * This Firmware uses commit 059bc5f of the new-extension branch. See:
+ * https://github.com/arduino/Arduino/tree/059bc5f
+ * 
+ * THIS IS A BETA VERSION! DO NOT EXPECT IT TO WORK FLAWLESSLY! WORKS FOR US.
+ * 
+ * VERSION USED FOR CONCERT @TIMELAB GENT (http://timelab.org), 30th April 2011
  */
 
 #include <SPI.h>
@@ -86,6 +94,9 @@ void setup() {
   Serial.println("Booting ...");
   setupLeds();
   
+  /*
+    Fancy display ...
+  */
   set_leds(PL,HIGH);
   delay(1000);
   set_leds(PL|CL,HIGH);
@@ -115,12 +126,15 @@ void setup() {
   /** Setup Ports to listen to **/
   setupOSC();
   
+  /*
+    Blink shortly to signal end of setup
+  */
   char state = 0x1;
   for (int i=0;i<3;i++) {
         set_leds(SL,state); state = !state;
         delay(250);
   }
-  set_leds(PL,HIGH);
+  set_leds(PL,HIGH); // bug?
   
   char buffer[32];
   sprintf(buffer,"Group: %s | Sender? %i",group_name(),is_sender());
@@ -143,62 +157,39 @@ void loop() {
     if (is_sender()) {
       Serial.println("not yet implemented!");
       delay(1000);
-      // update the server
-      // read the value of the dtmf
-      /*
-      sendMes.setArgs("f",&val1);
-      osc.sendOsc( &sendMes );
+      /* NOT YET IMPLEMENTED! But it should work as follows:
+			char dtmf;
+      readDTMF(&dtmf);
+			if changed:
+      	sendMes.setArgs("f",&dtmf);
+      	osc.sendOsc( &sendMes );
       */
     } 
     else {
       unsigned long now = millis();
       // update the client
       if(osc.available()) {
-        // check for PING message?
-        //logMessage(&recMes);
-        //Serial.println(group_name());
-        //char buffer[32];
-        //sprintf(buffer,"topaddr: %s | soll: %i",recMes.getTopAddress(),MAIN_ADDR);
-        //Serial.println(buffer);
-        
-        //sprintf(buffer,"subaddr: %s | soll: %i",recMes.getSubAddress(),group_name());
-        //Serial.println(buffer);
-
-        //Serial.println(strcmp(recMes.getTopAddress(),MAIN_ADDR),DEC);
-        //Serial.println(strcmp(recMes.getSubAddress(),group_name()),DEC);
-        
-        // check for timeout
-        
         if (!strcmp(recMes.getTopAddress(),PING)) {
           if (recMes.getArgNum()>0) timeout = (recMes.getTypeTag(0) == 'i') ? recMes.getArgInt(0):timeout;
           if (recMes.getArgNum()>1) pingtime = (recMes.getTypeTag(1) == 'i') ? recMes.getArgInt(1):pingtime;
           next_ping = now+pingtime;
         }
         
-        
         if(!strcmp(recMes.getTopAddress(),MAIN_ADDR) && !strcmp(recMes.getSubAddress(),group_name()) ) {
           r1val = (recMes.getTypeTag(0) == 'f') ? recMes.getArgFloat(0) : 0;
           next_ping = now+pingtime;
-        }
-        
+        }        
         osc.flush();
-        
-        //char vals[32];
-        //sprintf(vals,"val1: %i, val2: %i",(int)val1,(int)val2);
-        //Serial.println(vals);
       }
       
-      byte timed_out = (next_ping<now-timeout);
+      if ((next_ping<now-timeout)) { r1val = 0; r2val = 0; }
 
-      if (timed_out) { r1val = 0; r2val = 0; }
-      // OSC data received..
-
-      byte sig_state = (r1val|r2val); //&timed_out;
+      byte sig_state = (r1val|r2val);
       PORTD = (PIND&B00011111)|((B01100000)|(sig_state<<7));
 
       byte v1 = (r1val&0x1);
       byte v2 = (r2val&0x1<<1);
-      PORTB = (PINB&B11111100)|((v1|v2));//&timed_out);
+      PORTB = (PINB&B11111100)|((v1|v2));
     }
   }
 }

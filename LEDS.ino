@@ -3,12 +3,6 @@
 // LEDS: B11100010 DDRD
 
 void setupLeds(){
-  /*
-  pinMode(POWER_LED, OUTPUT);
-  pinMode(CONNECTION_LED, OUTPUT );
-  pinMode(SIGNAL_LED,OUTPUT );
-  return;
-  */
   DDRD   = B11100010;  // rigth most: 10 for Serial transmit
   PORTD &= B00011111;  // turns off 2..7, but leaves pins 0 and 1 alone
   PORTD |= B00011100;  // pull up not used pins

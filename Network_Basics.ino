@@ -1,4 +1,3 @@
-
 /**
  * Try to find an MAC Address, that's is not alread taken
  */
@@ -6,7 +5,7 @@
 void safe_start_ethernet(){
   set_leds(CL,LOW);
   int conn_status = 0;
-  byte mac[6] = { 0x00, 0xAA, 0xBB, 0xCC, 0xDD, MAC_ADDR} ; // , (byte)(group_num()) };
+  byte mac[6] = { 0x00, 0xAA, 0xBB, 0xCC, 0xDD, MAC_ADDR};
   do {
     conn_status = Ethernet.begin(mac);
     if (conn_status) {
