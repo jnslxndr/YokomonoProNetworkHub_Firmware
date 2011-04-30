@@ -33,15 +33,16 @@
 //#define MAC_ADDR 0x08 //  8
 //#define MAC_ADDR 0x09 //  9
 //#define MAC_ADDR 0x0A // 10
-
-#define MAC_ADDR 0x0B // 11
+//#define MAC_ADDR 0x0B // 11
 //#define MAC_ADDR 0x0C // 12
 //#define MAC_ADDR 0x0D // 13
 //#define MAC_ADDR 0x0E // 14
 //#define MAC_ADDR 0x0F // 15
 //#define MAC_ADDR 0x10 // 16
 //#define MAC_ADDR 0x11 // 17
-//#define MAC_ADDR 0x12 // 18
+
+//#define MAC_ADDR 0x12 // 18 // spare -> defect
+
 //#define MAC_ADDR 0x13 // 19
 //#define MAC_ADDR 0x14 // 20
 //#define MAC_ADDR 0x15 // 21
